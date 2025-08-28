@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: cat-calendar
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app
