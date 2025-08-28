@@ -1,0 +1,249 @@
+/* 基本スタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ヘッダー */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #000;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: 300;
+    margin-bottom: 15px;
+}
+
+.date-display {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 400;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #e9ecef;
+}
+
+/* メインコンテンツ */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 40px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.image-container {
+    margin-bottom: 30px;
+}
+
+.cat-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.cat-image:hover {
+    transform: scale(1.01);
+}
+
+.message-container {
+    margin-bottom: 30px;
+}
+
+.daily-message {
+    font-size: 1.2rem;
+    color: #333;
+    line-height: 1.8;
+    font-weight: 400;
+    padding: 25px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    border-left: 4px solid #000;
+}
+
+.refresh-btn {
+    background: #000;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.refresh-btn:hover {
+    background: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.refresh-btn:active {
+    transform: translateY(0);
+}
+
+/* 広告エリア */
+.ad-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.ad-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.ad-section h3 {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* フッター */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 300;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .date-display {
+        font-size: 1rem;
+        padding: 8px 15px;
+    }
+    
+    .calendar-card {
+        padding: 25px;
+    }
+    
+    .daily-message {
+        font-size: 1.1rem;
+        padding: 20px;
+    }
+    
+    .refresh-btn {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .date-display {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    .calendar-card {
+        padding: 20px;
+    }
+    
+    .daily-message {
+        font-size: 1rem;
+        padding: 15px;
+    }
+}
+
+/* ローディング状態 */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.calendar-card {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* 追加のミニマルスタイル */
+.no-content {
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+}

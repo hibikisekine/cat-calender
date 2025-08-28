@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写真一覧 - 日めくりカレンダー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">写真一覧</h1>
+        </header>
+
+        <main class="main-content">
+            {% if photos %}
+            <div class="photos-grid">
+                {% for photo in photos %}
+                <div class="photo-item">
+                    <div class="photo-wrapper">
+                        <img src="{{ url_for('static', filename='uploads/' + photo[1]) }}" 
+                             alt="{{ photo[2] }}" 
+                             class="photo-thumbnail">
+                        <div class="photo-overlay">
+                            <button class="delete-btn" onclick="confirmDelete({{ photo[0] }}, '{{ photo[2] }}')">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                    <div class="photo-info">
+                        <p class="photo-name">{{ photo[2] }}</p>
+                        <p class="photo-date">{{ photo[3] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-photos">
+                <div class="no-photos-icon">📷</div>
+                <h2>写真がありません</h2>
+                <p>まだ写真がアップロードされていません。</p>
+                <a href="{{ url_for('upload_photo') }}" class="upload-link">写真をアップロード</a>
+            </div>
+            {% endif %}
+        </main>
+
+        <nav class="navigation">
+            <a href="{{ url_for('index') }}" class="nav-link">ホーム</a>
+            <a href="{{ url_for('upload_photo') }}" class="nav-link">写真アップロード</a>
+            <a href="{{ url_for('view_photos') }}" class="nav-link active">写真一覧</a>
+        </nav>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- 削除確認モーダル -->
+    <div id="delete-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>写真を削除</h3>
+            <p>この写真を削除しますか？</p>
+            <p id="delete-photo-name"></p>
+            <div class="modal-buttons">
+                <button onclick="hideDeleteModal()" class="cancel-btn">キャンセル</button>
+                <form id="delete-form" method="POST" style="display: inline;">
+                    <button type="submit" class="delete-confirm-btn">削除</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(photoId, photoName) {
+            document.getElementById('delete-photo-name').textContent = photoName;
+            document.getElementById('delete-form').action = `/delete_photo/${photoId}`;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('delete-modal').style.display = 'none';
+        }
+
+        // モーダル外クリックで閉じる
+        document.getElementById('delete-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
+            }
+        });
+    </script>
+</body>
+</html>
