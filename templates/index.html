@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日めくり猫カレンダー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐱 日めくり猫カレンダー</h1>
+            <p class="subtitle">毎日癒やされる猫の写真と格言</p>
+            <p id="dateDisplay" class="date-display"></p>
+        </header>
+
+        <main>
+            <div class="calendar-card">
+                <div class="image-container">
+                    {% if cat_illustration %}
+                        <img src="{{ url_for('static', filename='uploads/' + cat_illustration.filename) }}" 
+                             alt="猫の写真" class="cat-image">
+                    {% else %}
+                        <div class="no-content">
+                            <p>Cursorで猫のイラストをstatic/uploadsフォルダに追加してください</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="message-container">
+                    {% if message %}
+                        <p class="daily-message">{{ message }}</p>
+                    {% else %}
+                        <p class="daily-message">今日も素敵な一日を！</p>
+                    {% endif %}
+                </div>
+                
+                <button id="refreshBtn" class="refresh-btn">更新</button>
+            </div>
+        </main>
+
+        <!-- 広告エリア -->
+        <div class="ad-container">
+            <div class="ad-section">
+                <h3>📢 おすすめ</h3>
+                <!-- Google AdSense 広告ユニット -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 日めくり猫カレンダー - 毎日の癒やしをお届け</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
