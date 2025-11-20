@@ -43,6 +43,106 @@
             </div>
         </main>
 
+        <!-- アフィリエイトリンクセクション -->
+        <div class="affiliate-section" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 24px; margin: 24px 0; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 16px; color: #333; text-align: center;">
+                🐾 猫ちゃんのためのおすすめ商品
+            </h2>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 16px; text-align: center;">
+                愛猫の健康と幸せのために、厳選したペット用品をご紹介します
+            </p>
+            <p style="color: #999; font-size: 0.75rem; font-style: italic; margin-bottom: 24px; text-align: center;">
+                ※ 以下のリンクはアフィリエイトリンクです。購入時に手数料が発生する場合があります。
+            </p>
+            
+            <!-- 商品カテゴリボタン -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                <a href="{{ affiliate_links.pet_food }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🍽️ ペットフード
+                </a>
+                
+                <a href="{{ affiliate_links.toys }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🎾 おもちゃ
+                </a>
+                
+                <a href="{{ affiliate_links.bed }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🛏️ ベッド・ハウス
+                </a>
+                
+                <a href="{{ affiliate_links.litter }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🚽 トイレ用品
+                </a>
+                
+                <a href="{{ affiliate_links.carrier }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🎒 キャリーケース
+                </a>
+                
+                <a href="{{ affiliate_links.scratch }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    ✂️ 爪とぎ
+                </a>
+                
+                <a href="{{ affiliate_links.bowl }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🥣 食器・給水器
+                </a>
+                
+                <a href="{{ affiliate_links.cat_tree }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: flex; align-items: center; justify-content: center; padding: 14px 16px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    🌳 キャットタワー
+                </a>
+            </div>
+            
+            <!-- Amazonで全ての猫用品を見る -->
+            <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                <a href="{{ affiliate_links.all_products }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer sponsored"
+                   style="display: inline-block; padding: 10px 20px; background: #ff9900; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.85rem; transition: background 0.2s;"
+                   onmouseover="this.style.background='#e68900';"
+                   onmouseout="this.style.background='#ff9900';">
+                    🛒 Amazonで全ての猫用品を見る
+                </a>
+            </div>
+        </div>
+
         <!-- 広告エリア -->
         <div class="ad-container">
             <div class="ad-section">

@@ -14,6 +14,9 @@ UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# AmazonアソシエイトID（環境変数から取得）
+AMAZON_ASSOCIATE_ID = os.environ.get('AMAZON_ASSOCIATE_ID', 'mjmg-22')
+
 # アップロードフォルダを作成
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -152,6 +155,32 @@ def get_random_cat_illustration():
     else:
         return None
 
+def get_affiliate_url(url):
+    """AmazonアソシエイトIDをURLに追加"""
+    if not AMAZON_ASSOCIATE_ID:
+        return url
+    
+    # amzn.toの短縮URLは既にアソシエイトIDが含まれている可能性があるため、そのまま返す
+    if 'amzn.to' in url:
+        return url
+    
+    # amazon.co.jpのURLにアソシエイトIDを追加
+    if 'amazon.co.jp' in url:
+        try:
+            from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+            parsed = urlparse(url)
+            query_params = parse_qs(parsed.query)
+            query_params['tag'] = [AMAZON_ASSOCIATE_ID]
+            new_query = urlencode(query_params, doseq=True)
+            new_parsed = parsed._replace(query=new_query)
+            return urlunparse(new_parsed)
+        except Exception:
+            # URL解析に失敗した場合は、クエリパラメータとして追加
+            separator = '&' if '?' in url else '?'
+            return f"{url}{separator}tag={AMAZON_ASSOCIATE_ID}"
+    
+    return url
+
 @app.route('/')
 def index():
     # ランダムなメッセージを取得
@@ -160,9 +189,24 @@ def index():
     # ランダムな猫のイラストを取得
     cat_illustration = get_random_cat_illustration()
     
+    # アフィリエイトリンクを生成
+    affiliate_links = {
+        'pet_food': get_affiliate_url('https://amzn.to/4pfUA2N'),
+        'toys': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+おもちゃ&rh=n%3A2275256051'),
+        'bed': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+ベッド&rh=n%3A2275256051'),
+        'litter': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+トイレ&rh=n%3A2275256051'),
+        'carrier': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+キャリーケース&rh=n%3A2275256051'),
+        'scratch': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+爪とぎ&rh=n%3A2275256051'),
+        'bowl': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+食器&rh=n%3A2275256051'),
+        'cat_tree': get_affiliate_url('https://www.amazon.co.jp/s?k=キャットタワー&rh=n%3A2275256051'),
+        'all_products': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+用品'),
+    }
+    
     return render_template('index.html', 
                          cat_illustration=cat_illustration, 
-                         message=random_message)
+                         message=random_message,
+                         amazon_associate_id=AMAZON_ASSOCIATE_ID,
+                         affiliate_links=affiliate_links)
 
 @app.route('/ads.txt')
 def serve_ads_txt():
