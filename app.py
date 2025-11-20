@@ -164,10 +164,10 @@ def index():
                          cat_illustration=cat_illustration, 
                          message=random_message)
 
-@app.route('/ads.txt')
-def ads_txt():
-    """AdSenseのads.txtファイルを返す"""
-    return "google.com, pub-7310204683723531, DIRECT, f08c47fec0942fa0", 200, {'Content-Type': 'text/plain'}
+@app.route('/privacy')
+def privacy():
+    """プライバシーポリシーページ"""
+    return render_template('privacy.html')
 
 @app.route('/api/random_content')
 def api_random_content():
