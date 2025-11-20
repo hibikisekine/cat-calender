@@ -164,6 +164,11 @@ def index():
                          cat_illustration=cat_illustration, 
                          message=random_message)
 
+@app.route('/ads.txt')
+def serve_ads_txt():
+    """AdSense所有権確認用のads.txtファイル"""
+    return app.send_static_file('ads.txt')
+
 @app.route('/privacy')
 def privacy():
     """プライバシーポリシーページ"""
