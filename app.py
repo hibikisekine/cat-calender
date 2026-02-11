@@ -144,12 +144,18 @@ def get_random_message():
         return random.choice(HEALING_MESSAGES)
 
 def get_random_cat_illustration():
-    """ランダムな猫のイラストを取得"""
+    """ランダムな猫の写真を取得（cat_illustrations + photos の両方から）"""
     conn = sqlite3.connect('calendar.db')
     c = conn.cursor()
 
-    # 猫のイラストを取得
-    c.execute('SELECT filename, original_name FROM cat_illustrations ORDER BY RANDOM() LIMIT 1')
+    # cat_illustrations と photos の両方からランダムに1枚取得
+    c.execute('''
+        SELECT filename, original_name FROM (
+            SELECT filename, original_name FROM cat_illustrations
+            UNION ALL
+            SELECT filename, original_name FROM photos
+        ) ORDER BY RANDOM() LIMIT 1
+    ''')
     result = c.fetchone()
 
     conn.close()
@@ -221,6 +227,16 @@ def index():
 def serve_ads_txt():
     """AdSense所有権確認用のads.txtファイル"""
     return app.send_static_file('ads.txt')
+
+@app.route('/manifest.json')
+def serve_manifest():
+    """PWAマニフェストファイル"""
+    return app.send_static_file('manifest.json')
+
+@app.route('/sw.js')
+def serve_sw():
+    """Service Workerファイル（ルートスコープで配信）"""
+    return app.send_static_file('sw.js')
 
 @app.route('/privacy')
 def privacy():
