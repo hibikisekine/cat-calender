@@ -5,17 +5,24 @@ import sqlite3
 from datetime import datetime, date
 from werkzeug.utils import secure_filename
 import json
+import secrets
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 
 # 設定
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
 # AmazonアソシエイトID（環境変数から取得）
 AMAZON_ASSOCIATE_ID = os.environ.get('AMAZON_ASSOCIATE_ID', 'mjmg-22')
+
+# Google AdSense パブリッシャーID（環境変数から取得）
+ADSENSE_PUB_ID = os.environ.get('ADSENSE_PUB_ID', 'ca-pub-7310204683723531')
+ADSENSE_AD_SLOT = os.environ.get('ADSENSE_AD_SLOT', '')
 
 # アップロードフォルダを作成
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -67,14 +74,14 @@ def init_db():
          original_name TEXT NOT NULL,
          upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
     ''')
-    
+
     c.execute('''
         CREATE TABLE IF NOT EXISTS daily_messages
         (id INTEGER PRIMARY KEY AUTOINCREMENT,
          date TEXT UNIQUE NOT NULL,
          message TEXT NOT NULL)
     ''')
-    
+
     # ユーザーアップロード用の一言メッセージテーブル
     c.execute('''
         CREATE TABLE IF NOT EXISTS user_messages
@@ -82,7 +89,7 @@ def init_db():
          message TEXT NOT NULL,
          upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
     ''')
-    
+
     # 猫のイラスト用のテーブル（ユーザーアップロード用）
     c.execute('''
         CREATE TABLE IF NOT EXISTS cat_illustrations
@@ -91,7 +98,7 @@ def init_db():
          original_name TEXT NOT NULL,
          upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
     ''')
-    
+
     conn.commit()
     conn.close()
 
@@ -99,22 +106,22 @@ def get_todays_message():
     today = date.today().isoformat()
     conn = sqlite3.connect('calendar.db')
     c = conn.cursor()
-    
+
     # 今日のメッセージを取得
     c.execute('SELECT message FROM daily_messages WHERE date = ?', (today,))
     result = c.fetchone()
-    
+
     if result:
         message = result[0]
     else:
         # 新しいメッセージを生成（日付に基づいて決定）
         day_of_year = date.today().timetuple().tm_yday
         message = HEALING_MESSAGES[day_of_year % len(HEALING_MESSAGES)]
-        
+
         # データベースに保存
         c.execute('INSERT INTO daily_messages (date, message) VALUES (?, ?)', (today, message))
         conn.commit()
-    
+
     conn.close()
     return message
 
@@ -122,13 +129,13 @@ def get_random_message():
     """ランダムなメッセージを取得（ユーザーメッセージを優先）"""
     conn = sqlite3.connect('calendar.db')
     c = conn.cursor()
-    
+
     # ユーザーメッセージ（猫の格言）を取得
     c.execute('SELECT message FROM user_messages')
     user_messages = [row[0] for row in c.fetchall()]
-    
+
     conn.close()
-    
+
     # ユーザーメッセージがある場合はそれを使用、ない場合はシステムメッセージ
     if user_messages:
         return random.choice(user_messages)
@@ -140,13 +147,13 @@ def get_random_cat_illustration():
     """ランダムな猫のイラストを取得"""
     conn = sqlite3.connect('calendar.db')
     c = conn.cursor()
-    
+
     # 猫のイラストを取得
     c.execute('SELECT filename, original_name FROM cat_illustrations ORDER BY RANDOM() LIMIT 1')
     result = c.fetchone()
-    
+
     conn.close()
-    
+
     if result:
         return {
             'filename': result[0],
@@ -159,11 +166,11 @@ def get_affiliate_url(url):
     """AmazonアソシエイトIDをURLに追加"""
     if not AMAZON_ASSOCIATE_ID:
         return url
-    
+
     # amzn.toの短縮URLは既にアソシエイトIDが含まれている可能性があるため、そのまま返す
     if 'amzn.to' in url:
         return url
-    
+
     # amazon.co.jpのURLにアソシエイトIDを追加
     if 'amazon.co.jp' in url:
         try:
@@ -178,17 +185,17 @@ def get_affiliate_url(url):
             # URL解析に失敗した場合は、クエリパラメータとして追加
             separator = '&' if '?' in url else '?'
             return f"{url}{separator}tag={AMAZON_ASSOCIATE_ID}"
-    
+
     return url
 
 @app.route('/')
 def index():
     # ランダムなメッセージを取得
     random_message = get_random_message()
-    
+
     # ランダムな猫のイラストを取得
     cat_illustration = get_random_cat_illustration()
-    
+
     # アフィリエイトリンクを生成
     affiliate_links = {
         'pet_food': get_affiliate_url('https://amzn.to/4pfUA2N'),
@@ -201,12 +208,14 @@ def index():
         'cat_tree': get_affiliate_url('https://www.amazon.co.jp/s?k=キャットタワー&rh=n%3A2275256051'),
         'all_products': get_affiliate_url('https://www.amazon.co.jp/s?k=猫+用品'),
     }
-    
-    return render_template('index.html', 
-                         cat_illustration=cat_illustration, 
+
+    return render_template('index.html',
+                         cat_illustration=cat_illustration,
                          message=random_message,
                          amazon_associate_id=AMAZON_ASSOCIATE_ID,
-                         affiliate_links=affiliate_links)
+                         affiliate_links=affiliate_links,
+                         adsense_pub_id=ADSENSE_PUB_ID,
+                         adsense_ad_slot=ADSENSE_AD_SLOT)
 
 @app.route('/ads.txt')
 def serve_ads_txt():
@@ -218,17 +227,103 @@ def privacy():
     """プライバシーポリシーページ"""
     return render_template('privacy.html')
 
+@app.route('/terms')
+def terms():
+    """利用規約ページ"""
+    return render_template('terms.html')
+
+@app.route('/upload', methods=['GET'])
+def upload_photo():
+    """写真アップロードページ"""
+    return render_template('upload.html')
+
+@app.route('/upload', methods=['POST'])
+def upload_photo_post():
+    """写真アップロード処理"""
+    if 'photo' not in request.files:
+        flash('ファイルが選択されていません。')
+        return redirect(url_for('upload_photo'))
+
+    file = request.files['photo']
+
+    if file.filename == '':
+        flash('ファイルが選択されていません。')
+        return redirect(url_for('upload_photo'))
+
+    if not allowed_file(file.filename):
+        flash('対応していないファイル形式です。PNG, JPG, JPEG, GIF, WebPのみ対応しています。')
+        return redirect(url_for('upload_photo'))
+
+    filename = secure_filename(file.filename)
+    # ファイル名の重複を防ぐためタイムスタンプを付与
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_')
+    safe_filename = timestamp + filename
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+    file.save(filepath)
+
+    # データベースに保存
+    conn = sqlite3.connect('calendar.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO photos (filename, original_name) VALUES (?, ?)',
+              (safe_filename, file.filename))
+    conn.commit()
+    conn.close()
+
+    flash('写真をアップロードしました。')
+    return redirect(url_for('view_photos'))
+
+@app.route('/photos')
+def view_photos():
+    """写真一覧ページ"""
+    conn = sqlite3.connect('calendar.db')
+    c = conn.cursor()
+    c.execute('SELECT id, filename, original_name, upload_date FROM photos ORDER BY upload_date DESC')
+    photos = c.fetchall()
+    conn.close()
+    return render_template('photos.html', photos=photos)
+
+@app.route('/delete_photo/<int:photo_id>', methods=['POST'])
+def delete_photo(photo_id):
+    """写真削除処理"""
+    conn = sqlite3.connect('calendar.db')
+    c = conn.cursor()
+
+    # 写真情報を取得
+    c.execute('SELECT filename FROM photos WHERE id = ?', (photo_id,))
+    result = c.fetchone()
+
+    if result:
+        filename = result[0]
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        # ファイルを削除
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+        # データベースから削除
+        c.execute('DELETE FROM photos WHERE id = ?', (photo_id,))
+        conn.commit()
+        flash('写真を削除しました。')
+    else:
+        flash('写真が見つかりませんでした。')
+
+    conn.close()
+    return redirect(url_for('view_photos'))
+
 @app.route('/api/random_content')
 def api_random_content():
     """ランダムなコンテンツ（猫のイラスト + メッセージ）を取得"""
     cat_illustration = get_random_cat_illustration()
     message = get_random_message()
-    
+
     return jsonify({
         'cat_illustration': cat_illustration,
         'message': message
     })
 
+# DB初期化
+init_db()
+
 if __name__ == '__main__':
-    init_db()
-    app.run(debug=True, host='0.0.0.0', port=8080) 
+    app.run(debug=False, host='0.0.0.0', port=8080)

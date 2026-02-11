@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="日めくり猫カレンダー - 毎日癒やされる猫の写真と格言をお届けします。">
+    <meta name="theme-color" content="#f8f9fa">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="猫カレンダー">
     <title>日めくり猫カレンダー</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
+
+    {% if adsense_pub_id %}
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_pub_id }}"
      crossorigin="anonymous"></script>
+    {% endif %}
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🐱 日めくり猫カレンダー</h1>
+            <h1>日めくり猫カレンダー</h1>
             <p class="subtitle">毎日癒やされる猫の写真と格言</p>
             <p id="dateDisplay" class="date-display"></p>
         </header>
@@ -22,15 +29,15 @@
             <div class="calendar-card">
                 <div class="image-container">
                     {% if cat_illustration %}
-                        <img src="{{ url_for('static', filename='uploads/' + cat_illustration.filename) }}" 
-                             alt="猫の写真" class="cat-image">
+                        <img src="{{ url_for('static', filename='uploads/' + cat_illustration.filename) }}"
+                             alt="今日の猫の写真" class="cat-image">
                     {% else %}
                         <div class="no-content">
-                            <p>Cursorで猫のイラストをstatic/uploadsフォルダに追加してください</p>
+                            <p>今日の猫の写真を準備中です</p>
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="message-container">
                     {% if message %}
                         <p class="daily-message">{{ message }}</p>
@@ -38,120 +45,121 @@
                         <p class="daily-message">今日も素敵な一日を！</p>
                     {% endif %}
                 </div>
-                
-                <button id="refreshBtn" class="refresh-btn">更新</button>
+
+                <button id="refreshBtn" class="refresh-btn">次の猫を見る</button>
             </div>
         </main>
 
         <!-- アフィリエイトリンクセクション -->
         <div class="affiliate-section" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 24px; margin: 24px 0; max-width: 900px; margin-left: auto; margin-right: auto;">
             <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 16px; color: #333; text-align: center;">
-                🐾 猫ちゃんのためのおすすめ商品
+                猫ちゃんのためのおすすめ商品
             </h2>
             <p style="color: #666; font-size: 0.9rem; margin-bottom: 16px; text-align: center;">
                 愛猫の健康と幸せのために、厳選したペット用品をご紹介します
             </p>
-            <p style="color: #999; font-size: 0.75rem; font-style: italic; margin-bottom: 24px; text-align: center;">
-                ※ 以下のリンクはアフィリエイトリンクです。購入時に手数料が発生する場合があります。
+            <p style="color: #999; font-size: 0.8rem; margin-bottom: 24px; text-align: center; background: #f8f9fa; padding: 8px 12px; border-radius: 4px;">
+                ※ 以下のリンクはアフィリエイトリンクです。購入時に当サイトに手数料が発生する場合があります。
             </p>
-            
+
             <!-- 商品カテゴリボタン -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 16px;">
-                <a href="{{ affiliate_links.pet_food }}" 
-                   target="_blank" 
+                <a href="{{ affiliate_links.pet_food }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🍽️ ペットフード
+                    ペットフード
                 </a>
-                
-                <a href="{{ affiliate_links.toys }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.toys }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🎾 おもちゃ
+                    おもちゃ
                 </a>
-                
-                <a href="{{ affiliate_links.bed }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.bed }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🛏️ ベッド・ハウス
+                    ベッド・ハウス
                 </a>
-                
-                <a href="{{ affiliate_links.litter }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.litter }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🚽 トイレ用品
+                    トイレ用品
                 </a>
-                
-                <a href="{{ affiliate_links.carrier }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.carrier }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🎒 キャリーケース
+                    キャリーケース
                 </a>
-                
-                <a href="{{ affiliate_links.scratch }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.scratch }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    ✂️ 爪とぎ
+                    爪とぎ
                 </a>
-                
-                <a href="{{ affiliate_links.bowl }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.bowl }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🥣 食器・給水器
+                    食器・給水器
                 </a>
-                
-                <a href="{{ affiliate_links.cat_tree }}" 
-                   target="_blank" 
+
+                <a href="{{ affiliate_links.cat_tree }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: flex; align-items: center; justify-content: center; padding: 12px 16px; background: #f8f9fa; color: #495057; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem; border: 1px solid #dee2e6; transition: all 0.2s;"
                    onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#adb5bd';"
                    onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';">
-                    🌳 キャットタワー
+                    キャットタワー
                 </a>
             </div>
-            
+
             <!-- Amazonで全ての猫用品を見る -->
             <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                <a href="{{ affiliate_links.all_products }}" 
-                   target="_blank" 
+                <a href="{{ affiliate_links.all_products }}"
+                   target="_blank"
                    rel="noopener noreferrer sponsored"
                    style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.85rem; transition: background 0.2s;"
                    onmouseover="this.style.background='#5a6268';"
                    onmouseout="this.style.background='#6c757d';">
-                    🛒 Amazonで全ての猫用品を見る
+                    Amazonで全ての猫用品を見る
                 </a>
             </div>
         </div>
 
+        {% if adsense_pub_id and adsense_ad_slot %}
         <!-- 広告エリア -->
         <div class="ad-container">
             <div class="ad-section">
-                <h3>📢 おすすめ</h3>
+                <h3>おすすめ</h3>
                 <!-- Google AdSense 広告ユニット -->
                 <ins class="adsbygoogle"
                      style="display:block"
-                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-client="{{ adsense_pub_id }}"
+                     data-ad-slot="{{ adsense_ad_slot }}"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
@@ -159,12 +167,14 @@
                 </script>
             </div>
         </div>
+        {% endif %}
 
         <footer>
             <div style="text-align: center; padding: 1rem 0; border-top: 1px solid #ddd; margin-top: 2rem;">
                 <a href="/privacy" style="color: #0066cc; text-decoration: underline; margin: 0 1rem;">プライバシーポリシー</a>
+                <a href="/terms" style="color: #0066cc; text-decoration: underline; margin: 0 1rem;">利用規約</a>
             </div>
-            <p style="text-align: center; margin-top: 1rem;">&copy; 2024 日めくり猫カレンダー - 毎日の癒やしをお届け</p>
+            <p style="text-align: center; margin-top: 1rem;">&copy; 2025 日めくり猫カレンダー</p>
         </footer>
     </div>
 

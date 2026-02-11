@@ -3,77 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>写真アップロード - 日めくりカレンダー</title>
+    <title>写真アップロード - 日めくり猫カレンダー</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1 class="title">写真アップロード</h1>
+        <header>
+            <h1>写真アップロード</h1>
+            <p class="subtitle">日めくり猫カレンダー</p>
         </header>
 
-        <main class="main-content">
-            <div class="upload-card">
-                <h2 class="upload-title">好きな写真をアップロード</h2>
-                <p class="upload-description">
+        <main>
+            <div class="calendar-card">
+                <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: #333;">好きな写真をアップロード</h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">
                     あなたの大切な写真をアップロードして、日めくりカレンダーをより素敵にしましょう。
                 </p>
 
-                <form method="POST" enctype="multipart/form-data" class="upload-form">
-                    <div class="file-input-container">
-                        <input type="file" name="photo" id="photo" accept="image/*" class="file-input" required>
-                        <label for="photo" class="file-label">
-                            <span class="file-icon">📷</span>
-                            <span class="file-text">写真を選択</span>
+                <form action="{{ url_for('upload_photo_post') }}" method="POST" enctype="multipart/form-data">
+                    <div style="margin-bottom: 1.5rem;">
+                        <input type="file" name="photo" id="photo" accept="image/png,image/jpeg,image/gif,image/webp" required
+                               style="display: none;">
+                        <label for="photo" style="display: inline-block; padding: 12px 24px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px; cursor: pointer; text-align: center; width: 100%; transition: all 0.2s;">
+                            写真を選択
                         </label>
                     </div>
 
-                    <div class="preview-container" id="preview-container" style="display: none;">
-                        <img id="preview-image" class="preview-image" alt="プレビュー">
+                    <div id="preview-container" style="display: none; margin-bottom: 1.5rem; text-align: center;">
+                        <img id="preview-image" alt="プレビュー" style="max-width: 100%; max-height: 300px; border-radius: 8px;">
                     </div>
 
-                    <button type="submit" class="upload-button">アップロード</button>
+                    <button type="submit" class="refresh-btn" style="width: 100%;">アップロード</button>
                 </form>
 
-                <div class="upload-info">
-                    <h3>対応形式</h3>
-                    <p>PNG, JPG, JPEG, GIF, WebP</p>
-                    
-                    <h3>注意事項</h3>
-                    <ul>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: #333;">対応形式</h3>
+                    <p style="color: #666; font-size: 0.9rem;">PNG, JPG, JPEG, GIF, WebP</p>
+
+                    <h3 style="font-size: 1rem; margin-top: 1rem; margin-bottom: 0.5rem; color: #333;">注意事項</h3>
+                    <ul style="color: #666; font-size: 0.9rem; margin-left: 1.5rem;">
                         <li>個人情報が含まれる写真は避けてください</li>
                         <li>著作権に注意してください</li>
                         <li>ファイルサイズは10MB以下にしてください</li>
+                        <li>不適切な内容の画像はアップロードしないでください</li>
                     </ul>
                 </div>
             </div>
         </main>
 
-        <nav class="navigation">
-            <a href="{{ url_for('index') }}" class="nav-link">ホーム</a>
-            <a href="{{ url_for('upload_photo') }}" class="nav-link active">写真アップロード</a>
-            <a href="{{ url_for('view_photos') }}" class="nav-link">写真一覧</a>
+        <nav style="text-align: center; margin-top: 2rem;">
+            <a href="{{ url_for('index') }}" style="color: #0066cc; text-decoration: underline; margin: 0 1rem;">ホーム</a>
+            <a href="{{ url_for('view_photos') }}" style="color: #0066cc; text-decoration: underline; margin: 0 1rem;">写真一覧</a>
         </nav>
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash-messages">
+                <div style="margin-top: 1rem;">
                     {% for message in messages %}
-                        <div class="flash-message">{{ message }}</div>
+                        <div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-bottom: 8px; text-align: center;">{{ message }}</div>
                     {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
+
+        <footer style="margin-top: 3rem; text-align: center; padding: 2rem 0; border-top: 1px solid #ddd;">
+            <p style="color: #666;">&copy; 2025 日めくり猫カレンダー</p>
+        </footer>
     </div>
 
     <script>
-        // ファイル選択時のプレビュー表示
         document.getElementById('photo').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const previewContainer = document.getElementById('preview-container');
             const previewImage = document.getElementById('preview-image');
-            
+
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
