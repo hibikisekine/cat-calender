@@ -3,75 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>写真一覧 - 日めくりカレンダー</title>
+    <title>写真一覧 - 日めくり猫カレンダー</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1 class="title">写真一覧</h1>
+        <header>
+            <h1>写真一覧</h1>
+            <p class="subtitle">日めくり猫カレンダー</p>
         </header>
 
-        <main class="main-content">
+        <main>
             {% if photos %}
-            <div class="photos-grid">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 2rem;">
                 {% for photo in photos %}
-                <div class="photo-item">
-                    <div class="photo-wrapper">
-                        <img src="{{ url_for('static', filename='uploads/' + photo[1]) }}" 
-                             alt="{{ photo[2] }}" 
-                             class="photo-thumbnail">
-                        <div class="photo-overlay">
-                            <button class="delete-btn" onclick="confirmDelete({{ photo[0] }}, '{{ photo[2] }}')">
-                                🗑️
+                <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e9ecef;">
+                    <div style="position: relative;">
+                        <img src="{{ url_for('static', filename='uploads/' + photo[1]) }}"
+                             alt="{{ photo[2] }}"
+                             style="width: 100%; height: 200px; object-fit: cover;">
+                        <div style="position: absolute; top: 8px; right: 8px;">
+                            <button onclick="confirmDelete({{ photo[0] }}, '{{ photo[2] }}')"
+                                    style="background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 0.8rem; color: #dc3545;">
+                                削除
                             </button>
                         </div>
                     </div>
-                    <div class="photo-info">
-                        <p class="photo-name">{{ photo[2] }}</p>
-                        <p class="photo-date">{{ photo[3] }}</p>
+                    <div style="padding: 8px 12px;">
+                        <p style="font-size: 0.85rem; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ photo[2] }}</p>
+                        <p style="font-size: 0.75rem; color: #999;">{{ photo[3] }}</p>
                     </div>
                 </div>
                 {% endfor %}
             </div>
             {% else %}
-            <div class="no-photos">
-                <div class="no-photos-icon">📷</div>
-                <h2>写真がありません</h2>
-                <p>まだ写真がアップロードされていません。</p>
-                <a href="{{ url_for('upload_photo') }}" class="upload-link">写真をアップロード</a>
+            <div class="calendar-card" style="text-align: center;">
+                <h2 style="color: #666; margin-bottom: 1rem;">写真がありません</h2>
+                <p style="color: #999; margin-bottom: 1.5rem;">まだ写真がアップロードされていません。</p>
+                <a href="{{ url_for('upload_photo') }}" class="refresh-btn" style="text-decoration: none; display: inline-block;">写真をアップロード</a>
             </div>
             {% endif %}
         </main>
 
-        <nav class="navigation">
-            <a href="{{ url_for('index') }}" class="nav-link">ホーム</a>
-            <a href="{{ url_for('upload_photo') }}" class="nav-link">写真アップロード</a>
-            <a href="{{ url_for('view_photos') }}" class="nav-link active">写真一覧</a>
+        <nav style="text-align: center; margin-top: 2rem;">
+            <a href="{{ url_for('index') }}" style="color: #0066cc; text-decoration: underline; margin: 0 1rem;">ホーム</a>
+            <a href="{{ url_for('upload_photo') }}" style="color: #0066cc; text-decoration: underline; margin: 0 1rem;">写真アップロード</a>
         </nav>
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash-messages">
+                <div style="margin-top: 1rem;">
                     {% for message in messages %}
-                        <div class="flash-message">{{ message }}</div>
+                        <div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-bottom: 8px; text-align: center;">{{ message }}</div>
                     {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
+
+        <footer style="margin-top: 3rem; text-align: center; padding: 2rem 0; border-top: 1px solid #ddd;">
+            <p style="color: #666;">&copy; 2025 日めくり猫カレンダー</p>
+        </footer>
     </div>
 
     <!-- 削除確認モーダル -->
-    <div id="delete-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h3>写真を削除</h3>
-            <p>この写真を削除しますか？</p>
-            <p id="delete-photo-name"></p>
-            <div class="modal-buttons">
-                <button onclick="hideDeleteModal()" class="cancel-btn">キャンセル</button>
+    <div id="delete-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 24px; max-width: 400px; width: 90%; text-align: center;">
+            <h3 style="margin-bottom: 1rem; color: #333;">写真を削除</h3>
+            <p style="color: #666; margin-bottom: 0.5rem;">この写真を削除しますか？</p>
+            <p id="delete-photo-name" style="color: #999; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
+            <div>
+                <button onclick="hideDeleteModal()" style="padding: 8px 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; cursor: pointer; margin-right: 8px;">キャンセル</button>
                 <form id="delete-form" method="POST" style="display: inline;">
-                    <button type="submit" class="delete-confirm-btn">削除</button>
+                    <button type="submit" style="padding: 8px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">削除</button>
                 </form>
             </div>
         </div>
@@ -80,7 +83,7 @@
     <script>
         function confirmDelete(photoId, photoName) {
             document.getElementById('delete-photo-name').textContent = photoName;
-            document.getElementById('delete-form').action = `/delete_photo/${photoId}`;
+            document.getElementById('delete-form').action = '/delete_photo/' + photoId;
             document.getElementById('delete-modal').style.display = 'flex';
         }
 
@@ -88,7 +91,6 @@
             document.getElementById('delete-modal').style.display = 'none';
         }
 
-        // モーダル外クリックで閉じる
         document.getElementById('delete-modal').addEventListener('click', function(e) {
             if (e.target === this) {
                 hideDeleteModal();
